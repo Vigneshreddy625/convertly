@@ -1,5 +1,5 @@
 import React from 'react';
-import pnf from "../../assets/pnf.jpg";
+import pnf from "../../assets/PNF.jpg";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 
