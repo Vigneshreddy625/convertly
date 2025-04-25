@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconFileTypePdf, IconFileWord, IconPresentation, IconFileExcel } from "@tabler/icons-react";
+import LazyImage from "../Items/LazyImage";
 
 export default function UploadStage({
   onFileSelect,
@@ -17,7 +17,7 @@ export default function UploadStage({
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e) => {  
+  const handleDragLeave = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -33,18 +33,6 @@ export default function UploadStage({
     onDrop(e);
   };
 
-  const renderIcon = () => {
-    switch(icon) {
-      case "pdf": return <IconFileTypePdf size={18} />;
-      case "word": return <IconFileWord size={18} />;
-      case "excel": return <IconFileExcel size={18} />;
-      case "presentation": return <IconPresentation size={18} />;
-      default: return null;
-    }
-  };
-
-  console.log(renderIcon());
-  console.log(icon);
   return (
     <div
       className={`bg-blue-500 rounded-lg p-24 text-center ${
@@ -57,13 +45,12 @@ export default function UploadStage({
     >
       <div className="flex flex-col items-center justify-center">
         {image && (
-          <div className="w-48 h-full mb-4 text-white">
-            <img src={image} alt={`${fileLabel} icon`} />
+          <div className="w-36 h-full mb-4 text-white">
+            <LazyImage src={image} alt={`${fileLabel} icon`} />
           </div>
         )}
 
         <label className="bg-white text-gray-800 font-medium py-3 px-4 rounded-md cursor-pointer flex items-center gap-2 mb-3 hover:bg-gray-100 transition-colors">
-          {renderIcon()}
           <span className="text-gray-800">Choose {fileLabel} File</span>
           <input
             id="file-input"

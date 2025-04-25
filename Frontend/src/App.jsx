@@ -11,6 +11,7 @@ import Explore from "./components/Explore";
 import ConversionPage from "./components/Converters/Converter";
 import NotFound from "./components/Items/NotFound";
 import { converterRoutes } from "./components/Converters/converters";
+import Documents from "./components/Account/Documents";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="explore" element={<Explore />} />
+          <Route path="documents" element={<Documents />} />
           {converterRoutes.map((config) => (
             <Route
               key={config.path}

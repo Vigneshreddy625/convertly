@@ -4,52 +4,60 @@ import {
   Home,
   PanelLeftDashed,
   PanelRightDashed,
-  User,
+  LayoutGrid,
 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import {
-  IconCategory,
-  IconFileTypeDoc,
-  IconFileTypePdf,
-} from "@tabler/icons-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { faFilePdf, faFileWord } from "@fortawesome/free-regular-svg-icons";
+import Profile from "../Profile";
+
+const navItems = [
+  { icon: Home, label: "Home", path: "home" },
+  { icon: LayoutGrid, label: "Explore", path: "explore" },
+  {
+    icon: () => <FontAwesomeIcon icon={faFilePdf} size="lg" />,
+    label: "PDF to Word",
+    path: "pdftoword",
+  },
+  {
+    icon: () => <FontAwesomeIcon icon={faFileWord} size="lg" />,
+    label: "Word to PDF",
+    path: "wordtopdf",
+  },
+  { icon: Bell, label: "Blog", path: "bell" },
+  { icon: GalleryHorizontal, label: "Gallery", path: "documents" },
+];
 
 function Navbar({ onToggleCollapse }) {
   const [collapsed, setCollapsed] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname.split("/")[1];
 
-  const toggleCollapse = () => {
+  const toggleCollapse = useCallback(() => {
     const newCollapsedState = !collapsed;
     setCollapsed(newCollapsedState);
 
     if (onToggleCollapse) {
       onToggleCollapse(newCollapsedState);
     }
-  };
+  }, [collapsed, onToggleCollapse]);
+
+  const handleNavigation = useCallback((path) => {
+    navigate(path);
+  }, [navigate]);
+
+  const isActive = useCallback((path) => {
+    return currentPath === path;
+  }, [currentPath]);
 
   useEffect(() => {
     if (onToggleCollapse) {
       onToggleCollapse(collapsed);
     }
   }, []);
-
-  const navigate = useNavigate();
-
-  const location = useLocation();
-  const currentPath = location.pathname.split("/")[1];
-  const isActive = (path) => {
-    return currentPath === path;
-  }
-
-  const navItems = [
-    { icon: Home, label: "Home", path: "home" },
-    { icon: IconCategory, label: "Explore", path: "explore" },
-    { icon: IconFileTypePdf, label: "PDF to Word", path: "pdftoword" },
-    { icon: IconFileTypeDoc, label: "Word to PDF", path: "wordtopdf" },
-    { icon: Bell, label: "Blog", path: "bell" },
-    { icon: GalleryHorizontal, label: "Gallery", path: "blog" },
-  ];
 
   return (
     <motion.div
@@ -79,10 +87,13 @@ function Navbar({ onToggleCollapse }) {
             )}
           </AnimatePresence>
         </div>
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+        <motion.div 
+          whileHover={{ scale: 1.1 }} 
+          whileTap={{ scale: 0.95 }}
+          onClick={toggleCollapse}
+        >
           {!collapsed ? (
             <PanelLeftDashed
-              onClick={toggleCollapse}
               className={`text-gray-800 dark:text-white hover:text-blue-600 cursor-pointer transition-colors duration-200 ${
                 collapsed ? "mr-2.5" : "mr-0"
               }`}
@@ -90,7 +101,6 @@ function Navbar({ onToggleCollapse }) {
             />
           ) : (
             <PanelRightDashed
-              onClick={toggleCollapse}
               className={`text-gray-800 dark:text-white hover:text-blue-600 cursor-pointer transition-colors duration-200 ${
                 collapsed ? "mr-2.5" : "mr-0"
               }`}
@@ -101,20 +111,25 @@ function Navbar({ onToggleCollapse }) {
       </div>
 
       <div className="flex flex-col space-y-4 px-5 py-2 flex-1">
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <div
             key={item.label}
             className={`flex items-center w-full py-2 px-2 rounded-lg hover:bg-blue-200 dark:hover:bg-gray-600 cursor-pointer transition-colors duration-200 space-x-2 ${
-                  isActive(item.path) ? "bg-blue-200 dark:bg-gray-500" : ""}`}
+              isActive(item.path) ? "bg-blue-200 dark:bg-gray-500" : ""
+            }`}
+            onClick={() => handleNavigation(item.path)}
           >
             <div
-              className={`flex items-center justify-center w-6 h-6 flex-shrink-0`}
-              onClick={() => navigate(item.path)}
+              className="flex items-center justify-center w-6 h-6 flex-shrink-0"
             >
-              <item.icon
-                className={`text-gray-800 dark:text-white hover:text-blue-600 `}
-                size={20}
-              />
+              {typeof item.icon === "function" ? (
+                <item.icon />
+              ) : (
+                <item.icon
+                  size={20}
+                  className="text-gray-800 dark:text-white hover:text-blue-600"
+                />
+              )}
             </div>
 
             <div className="ml-3 overflow-hidden">
@@ -136,12 +151,9 @@ function Navbar({ onToggleCollapse }) {
         ))}
       </div>
 
-      <div className="mt-auto px-5 py-4 border-t border-gray-400">
-        <div className="flex items-center px-2.5">
-          <User
-            className="text-gray-800 dark:text-white hover:text-blue-600 cursor-pointer"
-            size={20}
-          />
+      <div className="mt-auto px-5 py-2 border-t border-gray-400">
+        <div className="flex items-center px-1 py-2 hover:bg-blue-200 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition-colors duration-200">
+          <Profile />
           <AnimatePresence>
             {!collapsed && (
               <motion.span
