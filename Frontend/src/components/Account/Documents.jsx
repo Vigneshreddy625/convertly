@@ -11,7 +11,11 @@ function Documents() {
     { id: 2, name: "Business Proposal.docx", date: "23/03/2024" },
     { id: 3, name: "Project Analysis.xlsx", date: "15/02/2024" },
     { id: 4, name: "Market Research.ppt", date: "05/01/2024"},
-    { id: 5, name: "Financial Statement.pdf", date: "28/12/2023"}
+    { id: 6, name: "Financial Statement.pdf", date: "28/12/2023"},
+    { id: 7, name: "Financial Statement.pdf", date: "28/12/2023"},
+    { id: 8, name: "Financial Statement.pdf", date: "28/12/2023"},
+    { id: 9, name: "Financial Statement.pdf", date: "28/12/2023"},
+
   ];
 
   const filteredFiles = files.filter(file => 

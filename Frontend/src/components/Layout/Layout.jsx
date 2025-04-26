@@ -25,7 +25,7 @@ function Layout() {
           width: `calc(100% - ${navbarCollapsed ? '5rem' : '14rem'} - 2rem)`
         }}
       >
-        <div className='relative rounded-lg bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 shadow-md border border-gray-300 dark:border-gray-800 h-full overflow-auto'>
+        <div className='relative rounded-lg bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 shadow-md border border-gray-300 dark:border-gray-800 h-full overflow-auto flex justify-center items-center'>
           <Outlet/>
           <div className="absolute right-2 top-2 cursor-pointer"><ModeToggle/></div>
           {location.pathname !== '/home' && (

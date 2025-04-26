@@ -5,12 +5,13 @@ import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
+import profileimg from "../assets/VR.jpg";
 
 export default function Profile() {
   const user = {
     name: "Vignesh Reddy",
     email: "vigneshreddy625@gmail.com",
-    avatarUrl: "https://github.com/shadcn.png",
+    avatarUrl: profileimg,
     role: "Premium",
   };
 
