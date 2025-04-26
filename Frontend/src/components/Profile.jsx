@@ -4,6 +4,7 @@ import { LogOut, Settings, UserCircle, FileText, HelpCircle, Star } from "lucide
 import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const user = {
@@ -12,6 +13,8 @@ export default function Profile() {
     avatarUrl: "https://github.com/shadcn.png",
     role: "Premium",
   };
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -59,6 +62,7 @@ export default function Profile() {
             <Button
               variant="ghost"
               className="justify-start px-2 h-8 hover:text-blue-600 hover:bg-gray-100 cursor-pointer"
+              onClick={() => navigate("account/profile")}
             >
               <UserCircle className="mr-2 h-4 w-4" />
               <span className="text-sm">Account</span>
@@ -73,6 +77,7 @@ export default function Profile() {
             <Button
               variant="ghost"
               className="justify-start px-2 h-8 hover:text-blue-600 hover:bg-gray-100 cursor-pointer"
+              onClick={() => navigate("documents")}
             >
               <FileText className="mr-2 h-4 w-4" />
               <span className="text-sm">Documents</span>

@@ -54,7 +54,7 @@ function Documents() {
         {filteredFiles.map((file) => (
           <div 
             key={file.id}
-            className="group relative dark:hover:bg-zinc-800 rounded-lg p-2 transition-all"
+            className="group relative p-2 transition-all"
             onMouseEnter={() => setHoveredId(file.id)}
             onMouseLeave={() => setHoveredId(null)}
           >

@@ -5,12 +5,13 @@ import {
   PanelLeftDashed,
   PanelRightDashed,
   LayoutGrid,
+  FileCheck
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { faFilePdf, faFileWord } from "@fortawesome/free-regular-svg-icons";
+import { faFilePdf, faFileWord, faFileAlt} from "@fortawesome/free-regular-svg-icons";
 import Profile from "../Profile";
 
 const navItems = [
@@ -26,8 +27,8 @@ const navItems = [
     label: "Word to PDF",
     path: "wordtopdf",
   },
+  { icon: FileCheck, label: "My Docs", path: "documents" },
   { icon: Bell, label: "Blog", path: "bell" },
-  { icon: GalleryHorizontal, label: "Gallery", path: "documents" },
 ];
 
 function Navbar({ onToggleCollapse }) {
@@ -61,7 +62,7 @@ function Navbar({ onToggleCollapse }) {
 
   return (
     <motion.div
-      className="bg-[#ECECEC] dark:bg-[#302c2c] rounded-lg shadow-md flex flex-col h-full border border-gray-300 dark:border-none overflow-hidden"
+      className="hidden lg:flex bg-[#ECECEC] dark:bg-[#302c2c] rounded-lg shadow-md flex-col h-full border border-gray-300 dark:border-none overflow-hidden"
       animate={{
         width: collapsed ? "5rem" : "14rem",
       }}
@@ -95,14 +96,14 @@ function Navbar({ onToggleCollapse }) {
           {!collapsed ? (
             <PanelLeftDashed
               className={`text-gray-800 dark:text-white hover:text-blue-600 cursor-pointer transition-colors duration-200 ${
-                collapsed ? "mr-2.5" : "mr-0"
+                collapsed ? "mr-2" : "mr-0"
               }`}
               size={20}
             />
           ) : (
             <PanelRightDashed
               className={`text-gray-800 dark:text-white hover:text-blue-600 cursor-pointer transition-colors duration-200 ${
-                collapsed ? "mr-2.5" : "mr-0"
+                collapsed ? "mr-2" : "mr-0"
               }`}
               size={20}
             />
