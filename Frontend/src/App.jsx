@@ -13,6 +13,15 @@ import NotFound from "./components/Items/NotFound";
 import { converterRoutes } from "./components/Converters/converters";
 import Documents from "./components/Account/Documents";
 import Personal from "./components/Account/Personal";
+import PageUC from "./components/Items/PageUC";
+import Convert from "./components/Convert";
+
+const underConstructionRoutes = [
+  "/splitpdf",
+  "/compresspdf",
+  "/editpdf",
+  "/mergepdf",
+];
 
 function App() {
   return (
@@ -23,6 +32,7 @@ function App() {
           <Route path="home" element={<Home />} />
           <Route path="explore" element={<Explore />} />
           <Route path="documents" element={<Documents />} />
+          <Route path="convert" element={<Convert/>} />
           <Route path="account/profile" element={<Personal />} />
           {converterRoutes.map((config) => (
             <Route
@@ -30,6 +40,15 @@ function App() {
               path={config.path}
               element={
                 <ConversionPage converterType={config.path.substring(1)} />
+              }
+            />
+          ))}
+          {underConstructionRoutes.map((path) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <PageUC />
               }
             />
           ))}
