@@ -2,8 +2,8 @@ from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse
 import os
 from app.services.converter_service import pdf_to_excel
-from app.dependencies import save_upload_file
-from app.config import settings
+from app.core.dependencies import save_upload_file
+from app.core.config import settings
 from app.utils.file_utils import delete_after_delay
 
 router = APIRouter()

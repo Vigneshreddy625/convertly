@@ -1,6 +1,4 @@
 import os
-import subprocess
-import tempfile
 import logging
 from typing import Optional
 import pythoncom
