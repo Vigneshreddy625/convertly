@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
+import { AuthProvider } from "./authContext/AuthContext";
 import Home from "./components/Home";
 import Explore from "./components/Explore";
 import ConversionPage from "./components/Converters/Converter";
@@ -15,6 +16,8 @@ import Documents from "./components/Account/Documents";
 import Personal from "./components/Account/Personal";
 import PageUC from "./components/Items/PageUC";
 import Convert from "./components/Convert";
+import SignupPage from "./components/Auth/Signup";
+import Auth from "./components/Auth/Main";
 
 const underConstructionRoutes = [
   "/splitpdf",
@@ -25,8 +28,8 @@ const underConstructionRoutes = [
 
 function App() {
   return (
-    <Router>
       <Routes>
+        <Route path="/login" element={<Auth />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
@@ -55,7 +58,6 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </Router>
   );
 }
 
