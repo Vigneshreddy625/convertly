@@ -5,13 +5,19 @@ import {
   PanelLeftDashed,
   PanelRightDashed,
   LayoutGrid,
-  FileCheck
+  FileCheck,
+  User,
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext, use } from "react";
+import { useAuth } from "../../authContext/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { faFilePdf, faFileWord, faFileAlt} from "@fortawesome/free-regular-svg-icons";
+import {
+  faFilePdf,
+  faFileWord,
+  faFileAlt,
+} from "@fortawesome/free-regular-svg-icons";
 import Profile from "../Profile";
 
 const navItems = [
@@ -36,6 +42,7 @@ function Navbar({ onToggleCollapse }) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname.split("/")[1];
+  const { user } = useAuth();
 
   const toggleCollapse = useCallback(() => {
     const newCollapsedState = !collapsed;
@@ -46,13 +53,19 @@ function Navbar({ onToggleCollapse }) {
     }
   }, [collapsed, onToggleCollapse]);
 
-  const handleNavigation = useCallback((path) => {
-    navigate(path);
-  }, [navigate]);
+  const handleNavigation = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
-  const isActive = useCallback((path) => {
-    return currentPath === path;
-  }, [currentPath]);
+  const isActive = useCallback(
+    (path) => {
+      return currentPath === path;
+    },
+    [currentPath]
+  );
 
   useEffect(() => {
     if (onToggleCollapse) {
@@ -88,8 +101,8 @@ function Navbar({ onToggleCollapse }) {
             )}
           </AnimatePresence>
         </div>
-        <motion.div 
-          whileHover={{ scale: 1.1 }} 
+        <motion.div
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleCollapse}
         >
@@ -120,9 +133,7 @@ function Navbar({ onToggleCollapse }) {
             }`}
             onClick={() => handleNavigation(item.path)}
           >
-            <div
-              className="flex items-center justify-center w-6 h-6 flex-shrink-0"
-            >
+            <div className="flex items-center justify-center w-6 h-6 flex-shrink-0">
               {typeof item.icon === "function" ? (
                 <item.icon />
               ) : (
@@ -154,7 +165,13 @@ function Navbar({ onToggleCollapse }) {
 
       <div className="mt-auto px-5 py-2 border-t border-gray-400">
         <div className="flex items-center px-1 py-2 hover:bg-blue-200 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition-colors duration-200">
-          <Profile />
+          {user ? (
+            <Profile />
+          ) : (
+            <div className="ml-1.5">
+              <User className="text-gray-800 dark:text-white" size={20} onClick={() => navigate("/login")} />
+            </div>
+          )}
           <AnimatePresence>
             {!collapsed && (
               <motion.span
@@ -164,7 +181,7 @@ function Navbar({ onToggleCollapse }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                Profile
+                {user ? user.username : "Login"}
               </motion.span>
             )}
           </AnimatePresence>

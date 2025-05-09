@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../authContext/AuthContext";
+import { useAuth } from "../../authContext/AuthContext";
 
 function LoginForm() {
   const [formData, setFormData] = useState({
@@ -8,7 +8,7 @@ function LoginForm() {
   });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({

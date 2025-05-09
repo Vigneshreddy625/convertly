@@ -88,7 +88,7 @@ export default function Account() {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-4 flex justify-center">
         <Contact/>
       </div>
 

@@ -1,15 +1,15 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../authContext/AuthContext";
+import { useAuth } from "../../authContext/AuthContext";
 
-function RegisterForm({ activeButton }) {
+function RegisterForm() {
   const [formData, setFormData] = useState({
     email: "",
     username: "",
     password: "",
   });
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const { register } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const { register, registerLoading, authError } = useAuth();
 
   const handleChange = (e) => {
     setFormData({
@@ -18,20 +18,31 @@ function RegisterForm({ activeButton }) {
     });
   };
 
+  const validateEmail = (email) => {
+    // Basic email validation using a regular expression
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     const result = await register(formData);
 
-    if (result.error) {
+    if (result?.error) {
       setError(result.error);
     }
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="flex flex-col w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col w-full text-gray-800">
         <div className="w-full flex flex-col space-y-0.5">
           <input
             type="email"
@@ -55,7 +66,7 @@ function RegisterForm({ activeButton }) {
 
           <div className="relative bg-[#f1f1f1]">
             <input
-              type={showPassword ? "text" : "password"} 
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="password"
               value={formData.password}
@@ -73,9 +84,9 @@ function RegisterForm({ activeButton }) {
           </div>
         </div>
         <button type="submit" className="mb-4 bg-[#303030] text-white p-2 h-[50px] rounded-b-md cursor-pointer">
-          Register
+          {registerLoading ? "Loading..." : "Register"}
         </button>
-        {error && <div className="error text-center">{error}</div>}
+        {error && <div className="mt-2 text-red-500 text-center">{error}</div>}
       </form>
     </div>
   );

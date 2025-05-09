@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { useNavigate } from "react-router-dom";
 import profileimg from "../assets/VR.jpg";
+import Logout from "./Auth/Logout";
 
 export default function Profile() {
   const user = {
@@ -94,14 +95,7 @@ export default function Profile() {
 
           <Separator className="my-1" />
 
-          <Button
-            variant="destructive"
-            className="w-full h-8 font-medium bg-red-500 hover:bg-red-600 text-white text-sm cursor-pointer"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log Out</span>
-          </Button>
+          <Logout/>
         </div>
       </PopoverContent>
     </Popover>

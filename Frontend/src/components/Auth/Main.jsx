@@ -1,28 +1,46 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import RegisterForm from "./Signup";
 import LoginForm from "./Login";
 import fb from "../../assets/facebook.png";
 import google from "../../assets/google.png";
-import rive from "../../assets/auth-bg.jpg";
+import convertly from "../../assets/convertly.png";
+import login from "../../assets/logged.avif";
 
 function Auth() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeButton, setActiveButton] = useState("login");
 
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "signup" || tab === "login") {
+      setActiveButton(tab);
+    } else {
+      setSearchParams({ tab: "login" }, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const handleTabClick = (tab) => {
+    setActiveButton(tab);
+    setSearchParams({ tab }); 
+  };
+
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-screen h-screen text-gray-800">
       <div className="flex-1 bg-transparent">
-        <img src={rive} alt="Fiver" className="w-full h-full object-cover" />
+        <img src={login} alt="Fiver" className="w-full h-full object-cover" />
       </div>
 
       <div className="w-2/5 bg-white flex justify-center items-center">
         <div className="max-w-[380px] w-full px-8 py-10">
-          <h1 className="text-3xl font-bold mb-6">CONVERTLY</h1>
-          <p className="text-gray-500 mb-6">
+          <div className="w-2/3 mb-8">
+          <img src={convertly} alt="" srcset="" className="h-full w-full" />
+          </div>
+          <p className="text-gray-500 mb-4 ml-1">
             Please {activeButton === "login" ? "login" : "register"} to continue
           </p>
 
-          <div className="flex space-x-2 mb-8">
+          <div className="flex space-x-2 mb-4">
             <button className="flex-1 px-4 py-3 flex items-center justify-between bg-gray-100 rounded-l-lg hover:bg-gray-200 transition-all duration-200">
               <span className="font-medium">Google</span>
               <img src={google} alt="Google" className="h-5" />
@@ -42,7 +60,7 @@ function Auth() {
                   ? "bg-[#f1f1f1]"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
-              onClick={() => setActiveButton("login")}
+              onClick={() => handleTabClick("login")}
             >
               Login
             </button>
@@ -52,7 +70,7 @@ function Auth() {
                   ? "bg-[#f1f1f1]"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
-              onClick={() => setActiveButton("signup")}
+              onClick={() => handleTabClick("signup")}
             >
               Signup
             </button>
