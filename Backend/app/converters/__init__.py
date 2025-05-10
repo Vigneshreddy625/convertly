@@ -1,5 +1,12 @@
 from fastapi import APIRouter
-from app.api.routes.converters import excel_to_pdf, pdf_to_excel, pdf_to_ppt, pdf_to_word, word_to_pdf, ppt_to_pdf
+from app.converters import (
+    excel_to_pdf,
+    pdf_to_excel,
+    pdf_to_ppt,
+    pdf_to_word,
+    word_to_pdf,
+    ppt_to_pdf,
+)
 
 router = APIRouter(prefix="/converters", tags=["converters"])
 router.include_router(pdf_to_word.router)

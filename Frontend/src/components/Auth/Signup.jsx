@@ -61,7 +61,7 @@ function RegisterForm() {
             value={formData.username}
             onChange={handleChange}
             required
-            className="bg-[#f1f1f1] py-1 px-5 h-[50px] rounded-tr-lg focus:outline-none"
+            className="bg-[#f1f1f1] py-1 px-5 h-[50px] focus:outline-none"
           />
 
           <div className="relative bg-[#f1f1f1]">

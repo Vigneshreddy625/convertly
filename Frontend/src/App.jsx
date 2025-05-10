@@ -9,15 +9,19 @@ import Layout from "./components/Layout/Layout";
 import { AuthProvider } from "./authContext/AuthContext";
 import Home from "./components/Home";
 import Explore from "./components/Explore";
-import ConversionPage from "./components/Converters/Converter";
 import NotFound from "./components/Items/NotFound";
-import { converterRoutes } from "./components/Converters/converters";
 import Documents from "./components/Account/Documents";
 import Personal from "./components/Account/Personal";
 import PageUC from "./components/Items/PageUC";
 import Convert from "./components/Convert";
 import SignupPage from "./components/Auth/Signup";
 import Auth from "./components/Auth/Main";
+import PdfToWord from "./components/Converters/PdfToWord";
+import WordToPdf from "./components/Converters/WordToPdf";
+import PdfToPpt from "./components/Converters/PdfToPpt";
+import PptToPdf from "./components/Converters/PptToPdf";
+import PdfToExcel from "./components/Converters/PdfToExcel";
+import ExcelToPdf from "./components/Converters/ExcelToPdf";
 
 const underConstructionRoutes = [
   "/splitpdf",
@@ -27,6 +31,7 @@ const underConstructionRoutes = [
 ];
 
 function App() {
+  
   return (
       <Routes>
         <Route path="/login" element={<Auth />} />
@@ -37,15 +42,12 @@ function App() {
           <Route path="documents" element={<Documents />} />
           <Route path="convert" element={<Convert/>} />
           <Route path="account/profile" element={<Personal />} />
-          {converterRoutes.map((config) => (
-            <Route
-              key={config.path}
-              path={config.path}
-              element={
-                <ConversionPage converterType={config.path.substring(1)} />
-              }
-            />
-          ))}
+          <Route path="pdf-to-word" element={<PdfToWord />} />
+          <Route path="word-to-pdf" element={<WordToPdf />} />
+          <Route path="pdf-to-ppt" element={<PdfToPpt />} />
+          <Route path="ppt-to-pdf" element={<PptToPdf />} />
+          <Route path="pdf-to-excel" element={<PdfToExcel />} />
+          <Route path="excel-to-pdf" element={<ExcelToPdf />} />
           {underConstructionRoutes.map((path) => (
             <Route
               key={path}

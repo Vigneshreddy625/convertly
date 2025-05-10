@@ -7,8 +7,8 @@ function LoginForm() {
     password: ""
   });
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loginLoading } = useAuth();
 
   const handleChange = (e) => {
     setFormData({
@@ -64,7 +64,7 @@ function LoginForm() {
           </div>
         </div>
         <button type="submit" className=" bg-[#303030] text-white p-2 h-[50px] rounded-b-md">
-          Login
+          {loginLoading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
