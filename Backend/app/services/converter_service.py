@@ -1,14 +1,12 @@
 import os
 import logging
 from typing import Optional
-import pythoncom
+import subprocess
 from pdf2docx import Converter as PDFToDocxConverter
 import pandas as pd
 from tabula import read_pdf
-import win32com.client
 from pptx import Presentation
 from openpyxl import load_workbook
-import comtypes.client
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,29 +28,27 @@ def pdf_to_word(pdf_path: str, output_path: str) -> bool:
         return False
 
 def word_to_pdf(word_path: str, output_path: str) -> bool:
-    """Convert Word to PDF using Microsoft Word COM automation"""
+    """Convert Word to PDF using LibreOffice (headless)"""
     try:
-        # Initialize COM objects
-        pythoncom.CoInitialize()
-        word = win32com.client.Dispatch("Word.Application")
-        word.Visible = False
+        # Use LibreOffice to convert Word to PDF
+        command = [
+            "libreoffice", 
+            "--headless", 
+            "--convert-to", "pdf", 
+            "--outdir", os.path.dirname(output_path), 
+            word_path
+        ]
         
-        # Open the document
-        doc = word.Documents.Open(word_path)
+        result = subprocess.run(command, capture_output=True, text=True)
         
-        # Save as PDF
-        doc.SaveAs(output_path, FileFormat=17)  # 17 = PDF format
-        
-        # Close and cleanup
-        doc.Close()
-        word.Quit()
+        if result.returncode != 0:
+            logger.error(f"LibreOffice conversion failed: {result.stderr}")
+            return False
         
         return os.path.exists(output_path)
     except Exception as e:
         logger.error(f"Word to PDF conversion failed: {str(e)}")
         return False
-    finally:
-        pythoncom.CoUninitialize()
 
 def pdf_to_powerpoint(pdf_path: str, output_path: str) -> bool:
     """Convert PDF to PowerPoint 
@@ -104,51 +100,47 @@ def pdf_to_excel(pdf_path: str, output_path: str) -> bool:
         return False
 
 def powerpoint_to_pdf(ppt_path: str, output_path: str) -> bool:
-    """Convert PowerPoint to PDF using Microsoft PowerPoint COM automation"""
+    """Convert PowerPoint to PDF using LibreOffice (headless)"""
     try:
-        # Initialize COM objects
-        pythoncom.CoInitialize()
-        powerpoint = win32com.client.Dispatch("Powerpoint.Application")
-        powerpoint.Visible = True
+        # Use LibreOffice to convert PowerPoint to PDF
+        command = [
+            "libreoffice", 
+            "--headless", 
+            "--convert-to", "pdf", 
+            "--outdir", os.path.dirname(output_path), 
+            ppt_path
+        ]
         
-        # Open the presentation
-        presentation = powerpoint.Presentations.Open(ppt_path)
+        result = subprocess.run(command, capture_output=True, text=True)
         
-        # Save as PDF
-        presentation.SaveAs(output_path, 32)  # 32 = PDF format
-        
-        # Close and cleanup
-        presentation.Close()
-        powerpoint.Quit()
+        if result.returncode != 0:
+            logger.error(f"LibreOffice conversion failed: {result.stderr}")
+            return False
         
         return os.path.exists(output_path)
     except Exception as e:
         logger.error(f"PowerPoint to PDF conversion failed: {str(e)}")
         return False
-    finally:
-        pythoncom.CoUninitialize()
 
 def excel_to_pdf(excel_path: str, output_path: str) -> bool:
-    """Convert Excel to PDF using Microsoft Excel COM automation"""
+    """Convert Excel to PDF using LibreOffice (headless)"""
     try:
-        # Initialize COM objects
-        pythoncom.CoInitialize()
-        excel = win32com.client.Dispatch("Excel.Application")
-        excel.Visible = False
+        # Use LibreOffice to convert Excel to PDF
+        command = [
+            "libreoffice", 
+            "--headless", 
+            "--convert-to", "pdf", 
+            "--outdir", os.path.dirname(output_path), 
+            excel_path
+        ]
         
-        # Open the workbook
-        workbook = excel.Workbooks.Open(excel_path)
+        result = subprocess.run(command, capture_output=True, text=True)
         
-        # Save as PDF
-        workbook.ExportAsFixedFormat(0, output_path)  # 0 = PDF format
-        
-        # Close and cleanup
-        workbook.Close()
-        excel.Quit()
+        if result.returncode != 0:
+            logger.error(f"LibreOffice conversion failed: {result.stderr}")
+            return False
         
         return os.path.exists(output_path)
     except Exception as e:
         logger.error(f"Excel to PDF conversion failed: {str(e)}")
         return False
-    finally:
-        pythoncom.CoUninitialize()
