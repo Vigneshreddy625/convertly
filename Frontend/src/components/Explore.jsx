@@ -45,7 +45,7 @@ const tools = [
   },
 
   {
-    title: "PDF to PowerPoint",
+    title: "PDF to PPT",
     imageSrc: pdftoppt,
     description:
       "Turn your PDF files into easy to edit PPT and PPTX slideshows.",
@@ -58,7 +58,7 @@ const tools = [
   },
 
   {
-    title: "PowerPoint to PDF",
+    title: "PPT to PDF",
     imageSrc: ppttopdf,
     description:
       "Make PPT and PPTX slideshows easy to view by converting them to PDF.",
@@ -124,7 +124,7 @@ export default function Explore() {
             <div
               className="mt-4 flex justify-center"
               onClick={() =>
-                navigate(`/${tool.title.replace(/\s+/g, "").toLowerCase()}`)
+                navigate(`/${tool.title.replace(/\s+/g, "-").toLowerCase()}`)
               }
             >
               <Explorebtn />

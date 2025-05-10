@@ -26,12 +26,12 @@ const navItems = [
   {
     icon: () => <FontAwesomeIcon icon={faFilePdf} size="lg" />,
     label: "PDF to Word",
-    path: "pdftoword",
+    path: "pdf-to-word",
   },
   {
     icon: () => <FontAwesomeIcon icon={faFileWord} size="lg" />,
     label: "Word to PDF",
-    path: "wordtopdf",
+    path: "word-to-pdf",
   },
   { icon: FileCheck, label: "My Docs", path: "documents" },
   { icon: Bell, label: "Blog", path: "bell" },
