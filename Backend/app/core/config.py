@@ -12,9 +12,9 @@ class Settings(BaseSettings):
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
-    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_SERVER: str 
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str = "tdd"
+    POSTGRES_DB: str 
 
     @property
     def DATABASE_URL(self) -> str:
