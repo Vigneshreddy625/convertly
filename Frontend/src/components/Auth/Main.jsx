@@ -41,11 +41,11 @@ function Auth() {
           </p>
 
           <div className="flex space-x-2 mb-4">
-            <button className="flex-1 px-4 py-3 flex items-center justify-between bg-gray-100 rounded-l-lg hover:bg-gray-200 transition-all duration-200">
+            <button className="flex-1 px-4 py-3 flex items-center justify-between bg-gray-100 rounded-l-lg hover:bg-gray-200 transition-all duration-200 cursor-pointer">
               <span className="font-medium">Google</span>
               <img src={google} alt="Google" className="h-5" />
             </button>
-            <button className="flex-1 px-4 py-3 flex items-center justify-between bg-gray-100 rounded-r-lg hover:bg-gray-200 transition-all duration-200">
+            <button className="flex-1 px-4 py-3 flex items-center justify-between bg-gray-100 rounded-r-lg hover:bg-gray-200 transition-all duration-200 cursor-pointer">
               <span className="font-medium">Facebook</span>
               <img src={fb} alt="Facebook" className="h-5" />
             </button>
@@ -55,7 +55,7 @@ function Auth() {
 
           <div className="flex">
             <button
-              className={`p-4 font-medium transition-colors rounded-t-lg duration-200 ${
+              className={`p-4 font-medium transition-colors rounded-t-lg duration-200 cursor-pointer ${
                 activeButton === "login"
                   ? "bg-[#f1f1f1]"
                   : "border-transparent text-gray-500 hover:text-gray-700"
@@ -65,7 +65,7 @@ function Auth() {
               Login
             </button>
             <button
-              className={`p-4 font-medium transition-colors rounded-t-lg duration-200 ${
+              className={`p-4 font-medium transition-colors rounded-t-lg duration-200 cursor-pointer ${
                 activeButton === "signup"
                   ? "bg-[#f1f1f1]"
                   : "border-transparent text-gray-500 hover:text-gray-700"

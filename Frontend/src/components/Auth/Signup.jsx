@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useAuth } from "../../authContext/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -9,7 +10,9 @@ function RegisterForm() {
   });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { register, registerLoading, authError } = useAuth();
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({
@@ -19,7 +22,6 @@ function RegisterForm() {
   };
 
   const validateEmail = (email) => {
-    // Basic email validation using a regular expression
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -37,11 +39,48 @@ function RegisterForm() {
 
     if (result?.error) {
       setError(result.error);
+    } else {
+      setShowSuccessModal(true);
     }
   };
 
+  const SuccessModal = () => {
+    return (
+      <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+              <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">Registration Successful!</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Your account has been created. Redirecting to sign in page...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Effect to handle redirect after successful registration
+  useEffect(() => {
+    if (showSuccessModal) {
+      // Wait 2 seconds before redirecting
+      const redirectTimer = setTimeout(() => {
+        // Handle navigation directly in the component
+        navigate("/login");
+      }, 2000);
+      
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [showSuccessModal, navigate]);
+
   return (
     <div>
+      {showSuccessModal && <SuccessModal />}
+      
       <form onSubmit={handleSubmit} className="flex flex-col w-full text-gray-800">
         <div className="w-full flex flex-col space-y-0.5">
           <input
@@ -84,7 +123,7 @@ function RegisterForm() {
           </div>
         </div>
         <button type="submit" className="mb-4 bg-[#303030] text-white p-2 h-[50px] rounded-b-md cursor-pointer">
-          {registerLoading ? "Loading..." : "Register"}
+          {registerLoading ? "Signing up..." : "Signup"}
         </button>
         {error && <div className="mt-2 text-red-500 text-center">{error}</div>}
       </form>

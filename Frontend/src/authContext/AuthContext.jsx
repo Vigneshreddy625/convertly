@@ -129,7 +129,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/register', userData);
       setRegisterLoading(false);
-      navigate('/login');
       return { success: true };
     } catch (error) {
       console.error('Registration failed:', error);
