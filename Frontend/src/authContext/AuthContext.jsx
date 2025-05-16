@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
-const API_URL = 'http://127.0.0.1:8000/auth';
+const API_URL = 'https://convertly-min2.onrender.com/auth';
 
 
 const api = axios.create({
