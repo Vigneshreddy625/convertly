@@ -3,11 +3,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 import os
+from app.core.config import settings
 from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("POSTGRES_URL", "postgresql://postgres:postgres@localhost:5432/fastapi_db")
+DATABASE_URL = os.getenv("DATABASE_URL") or settings.DATABASE_URL
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set.")
 
 engine = create_engine(DATABASE_URL)
 
