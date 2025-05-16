@@ -6,15 +6,12 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
-import { AuthProvider } from "./authContext/AuthContext";
 import Home from "./components/Home";
 import Explore from "./components/Explore";
 import NotFound from "./components/Items/NotFound";
 import Documents from "./components/Account/Documents";
 import Personal from "./components/Account/Personal";
 import PageUC from "./components/Items/PageUC";
-import Convert from "./components/Convert";
-import SignupPage from "./components/Auth/Signup";
 import Auth from "./components/Auth/Main";
 import PdfToWord from "./components/Converters/PdfToWord";
 import WordToPdf from "./components/Converters/WordToPdf";
@@ -40,7 +37,6 @@ function App() {
           <Route path="home" element={<Home />} />
           <Route path="explore" element={<Explore />} />
           <Route path="documents" element={<Documents />} />
-          <Route path="convert" element={<Convert/>} />
           <Route path="account/profile" element={<Personal />} />
           <Route path="pdf-to-word" element={<PdfToWord />} />
           <Route path="word-to-pdf" element={<WordToPdf />} />
