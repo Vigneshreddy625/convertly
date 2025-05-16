@@ -30,7 +30,6 @@ function LoginForm() {
 
   return (
     <div>
-      {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-[340px]">
         <div className="w-full flex flex-col space-y-0.5">
 
@@ -63,9 +62,10 @@ function LoginForm() {
             </button>
           </div>
         </div>
-        <button type="submit" className=" bg-[#303030] text-white p-2 h-[50px] rounded-b-md">
+        <button type="submit" className=" bg-[#303030] text-white p-2 h-[50px] rounded-b-md cursor-pointer">
           {loginLoading ? "Logging in..." : "Login"}
         </button>
+        {error && <div className="error mt-4 text-red-600 text-center">{error}</div>}
       </form>
     </div>
   );
