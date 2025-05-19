@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from app.db.database import engine, Base
 from app.auth.router import router as auth_router
 from app.converters import router as converters_router
+from app.files.file import router as files_router
 import app.models 
 
 @asynccontextmanager
@@ -29,6 +30,7 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/auth", tags=["authentication"])
 app.include_router(converters_router, tags=["converters"]) 
+app.include_router(files_router, tags=["files"])
 
 @app.get("/")
 def root():

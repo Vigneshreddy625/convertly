@@ -64,12 +64,9 @@ function RegisterForm() {
     );
   };
 
-  // Effect to handle redirect after successful registration
   useEffect(() => {
     if (showSuccessModal) {
-      // Wait 2 seconds before redirecting
       const redirectTimer = setTimeout(() => {
-        // Handle navigation directly in the component
         navigate("/login");
       }, 2000);
       
@@ -116,7 +113,7 @@ function RegisterForm() {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500 text-[14px]"
+              className="absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 text-gray-500 text-[14px]"
             >
               {showPassword ? "Hide" : "Show"}
             </button>

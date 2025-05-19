@@ -9,16 +9,17 @@ export default function SelectedStage({
   onFileSelect,
   accept = ".pdf",
   convertLabel = "Convert",
+  previewImage
 }) {
   const filePreview = (file, index) => {
     return (
       <div
         key={index}
-        className="bg-gray-200 rounded-lg p-2 w-48 h-64 flex flex-col items-center justify-between m-2"
+        className="bg-gray-400 rounded-lg p-2 w-48 h-64 flex flex-col items-center justify-between m-2"
       >
-        <div className="w-full h-48 bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden p-2">
+        <div className="w-full h-full bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden p-2">
           <img
-            src="/api/placeholder/160/200"
+            src={previewImage}
             alt="preview"
             className="max-w-full max-h-full"
           />
@@ -35,14 +36,14 @@ export default function SelectedStage({
       <div className="bg-blue-500 py-3 px-4 flex justify-end items-center">
         <button
           onClick={onDeleteAll}
-          className="bg-white rounded-md py-2 px-4 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+          className="bg-white rounded-md cursor-pointer py-2 px-4 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
         >
           <TrashIcon size={18} />
-          Delete All
+          Delete
         </button>
       </div>
 
-      <div className="bg-gray-100 dark:bg-gray-800 p-6 min-h-64 flex flex-wrap justify-start">
+      <div className="bg-[#ECECEC] dark:bg-black p-6 min-h-64 flex flex-wrap justify-center">
         {files.map((file, index) => filePreview(file, index))}
         <input
           id="file-input"

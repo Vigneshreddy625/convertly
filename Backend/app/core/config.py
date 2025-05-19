@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str 
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str 
+    
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY")
+    SUPABASE_STORAGE_URL: str = f"{SUPABASE_URL}/storage/v1/object/public"
 
     @property
     def DATABASE_URL(self) -> str:

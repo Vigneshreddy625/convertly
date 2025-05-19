@@ -4,86 +4,97 @@ import LazyImage from "../Items/LazyImage";
 import UploadingStage from "../Stages/UploadingStage";
 import SelectedStage from "../Stages/SelectedStage";
 import ReadyStage from "../Stages/ReadyStage";
-
 import pdftoword from "../../assets/pdftoword.png";
 import wordtopdf from "../../assets/wordtopdf.png";
 import pdftoppt from "../../assets/pdftoppt.svg";
 import pdftoexcel from "../../assets/pdftoexcel.svg";
 import ppttopdf from "../../assets/ppttopdf.svg";
 import exceltopdf from "../../assets/exceltopdf.svg";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker?url";
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const CONVERTER_CONFIG = {
   "pdf-to-word": {
     title: "Convert PDF to Word",
-    description: "Converts your PDF to high-quality Word document easily using our online converter tool.",
+    description:
+      "Converts your PDF to high-quality Word document easily using our online converter tool.",
     icon: pdftoword,
     acceptedFiles: ".pdf",
     inputLabel: "Choose PDF File",
     dropLabel: "or drop PDF here",
     outputExtension: ".docx",
     endpoint: "/converters/pdf-to-word",
-    outputMimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    outputMimeType:
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   },
   "word-to-pdf": {
     title: "Convert Word to PDF",
-    description: "Transform your Word documents into high-quality PDF files easily.",
+    description:
+      "Converts your Word to high-quality PDF document easily using our online converter tool.",
     icon: wordtopdf,
     acceptedFiles: ".doc,.docx",
     inputLabel: "Choose Word File",
     dropLabel: "or drop Word file here",
     outputExtension: ".pdf",
     endpoint: "/converters/word-to-pdf",
-    outputMimeType: "application/pdf"
+    outputMimeType: "application/pdf",
   },
   "pdf-to-excel": {
     title: "Convert PDF to Excel",
-    description: "Extract tables from your PDF into editable Excel spreadsheets.",
+    description:
+      "Extract tables from your PDF into editable Excel spreadsheets using our online converter tool.",
     icon: pdftoexcel,
     acceptedFiles: ".pdf",
     inputLabel: "Choose PDF File",
     dropLabel: "or drop PDF here",
     outputExtension: ".xlsx",
     endpoint: "/converters/pdf-to-excel",
-    outputMimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    outputMimeType:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   },
   "excel-to-pdf": {
     title: "Convert Excel to PDF",
-    description: "Transform your Excel spreadsheets into shareable PDF files.",
+    description:
+      "Transform your Excel spreadsheets into shareable PDF files using our online converter tool.",
     icon: exceltopdf,
     acceptedFiles: ".xls,.xlsx",
     inputLabel: "Choose Excel File",
     dropLabel: "or drop Excel file here",
     outputExtension: ".pdf",
     endpoint: "/converters/excel-to-pdf",
-    outputMimeType: "application/pdf"
+    outputMimeType: "application/pdf",
   },
   "ppt-to-pdf": {
     title: "Convert PowerPoint to PDF",
-    description: "Convert your presentations into high-quality PDF documents.",
+    description:
+      "Convert your presentations into high-quality PDF documents using our online converter tool.",
     icon: ppttopdf,
     acceptedFiles: ".ppt,.pptx",
     inputLabel: "Choose PowerPoint File",
     dropLabel: "or drop PowerPoint file here",
     outputExtension: ".pdf",
     endpoint: "/converters/powerpoint-to-pdf",
-    outputMimeType: "application/pdf"
+    outputMimeType: "application/pdf",
   },
   "pdf-to-ppt": {
     title: "Convert PDF to PowerPoint",
-    description: "Transform your PDF into editable PowerPoint presentations.",
+    description:
+      "Transform your PDF into editable PowerPoint presentations using our online converter tool.",
     icon: pdftoppt,
     acceptedFiles: ".pdf",
     inputLabel: "Choose PDF File",
     dropLabel: "or drop PDF here",
     outputExtension: ".pptx",
     endpoint: "/converters/pdf-to-powerpoint",
-    outputMimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    outputMimeType:
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   },
 };
 
 function Recreate({ converterType }) {
   const config = CONVERTER_CONFIG[converterType];
-  
+
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -94,23 +105,55 @@ function Recreate({ converterType }) {
   const [isDragging, setIsDragging] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [downloadFileName, setDownloadFileName] = useState("");
+  const [previewImage, setPreviewImage] = useState(null);
+  const [accessToken, setAccessToken] = useState(() => {
+    return localStorage.getItem("accessToken") || null;
+  });
 
-  const handleFileSelect = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setFileName(selectedFile.name);
-      setStage("selected");
-    }
+  const extractFirstPageAsImage = async (pdfFile) => {
+    const arrayBuffer = await pdfFile.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 2 });
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({
+      canvasContext: context,
+      viewport: viewport,
+    }).promise;
+
+    return canvas.toDataURL("image/png");
   };
 
-  const handleDrop = (e) => {
+  const handleFileSelect = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+    setFileName(selectedFile.name);
+
+    const isPdf = selectedFile.type === "application/pdf";
+    if (isPdf) {
+      const preview = await extractFirstPageAsImage(selectedFile);
+      setPreviewImage(preview);
+    }
+
+    setStage("selected");
+  };
+
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
       setFile(droppedFile);
       setFileName(droppedFile.name);
+      const preview = await extractFirstPageAsImage(droppedFile);
+      setPreviewImage(preview);
       setStage("selected");
     }
   };
@@ -170,6 +213,9 @@ function Recreate({ converterType }) {
         formData,
         {
           responseType: "blob",
+          headers: {
+            Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+          },
           onUploadProgress: (progressEvent) => {
             if (!startTime) startTime = new Date().getTime();
 
@@ -205,16 +251,16 @@ function Recreate({ converterType }) {
       );
 
       const outputBlob = new Blob([response.data], {
-        type: config.outputMimeType
+        type: config.outputMimeType,
       });
-      
+
       const url = window.URL.createObjectURL(outputBlob);
 
       const disposition = response.headers["content-disposition"];
-      const fileNameParts = fileName.split('.');
-      fileNameParts.pop(); 
-      let downloadName = fileNameParts.join('.') + config.outputExtension;
-      
+      const fileNameParts = fileName.split(".");
+      fileNameParts.pop();
+      let downloadName = fileNameParts.join(".") + config.outputExtension;
+
       if (disposition) {
         const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
         if (filenameMatch && filenameMatch[1]) {
@@ -285,12 +331,15 @@ function Recreate({ converterType }) {
           {stage === "selected" && (
             <SelectedStage
               files={[file]}
+              previewImage={previewImage}
               onDeleteAll={handleDeleteAll}
               onAddMore={handleAddMore}
               onStartConversion={handleSubmit}
               onFileSelect={handleFileSelect}
               accept={config.acceptedFiles}
-              convertLabel={`Convert to ${config.outputExtension.slice(1).toUpperCase()}`}
+              convertLabel={`Convert to ${config.outputExtension
+                .slice(1)
+                .toUpperCase()}`}
             />
           )}
 
