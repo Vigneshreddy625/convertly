@@ -12,7 +12,7 @@ function Documents() {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("No access token found");
 
-      const { data } = await axios.get('http://127.0.0.1:8000/files', {
+      const { data } = await axios.get('https://convertly-min2.onrender.com/files', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
