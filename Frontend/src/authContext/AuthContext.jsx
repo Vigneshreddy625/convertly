@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Items/Loading";
 
 const AuthContext = createContext(null);
 
-const API_URL = 'http://127.0.0.1:8000/auth';
+const API_URL = 'https://convertly-min2.onrender.com/auth';
 
 
 const api = axios.create({
@@ -296,7 +297,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <p>loading...</p> : children}
+      {loading ? <Loading/> : children}
     </AuthContext.Provider>
   );
 };
@@ -313,7 +314,7 @@ export const withAuth = (Component) => {
     }, [loading, isAuthenticated, navigate]);
 
     if (loading) {
-      return <p >Loading...</p>;
+      return <Loading/>;
     }
 
     if (!isAuthenticated) {
@@ -342,7 +343,7 @@ export const withAdminAuth = (Component) => {
     }, [loading, isAuthenticated, user, navigate]);
 
     if (loading) {
-      return <p>Loading...</p>;
+      return <Loading/>;
     }
 
     if (!isAuthenticated || user?.role !== "admin") {
