@@ -18,7 +18,6 @@ ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 
-# Make token optional by setting the auto_error parameter to False
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -83,7 +82,6 @@ def get_current_user_optional(token: Optional[str] = Depends(oauth2_scheme), db:
         print(f"Unexpected error during authentication: {str(e)}")
         return None
     
-    # Query for user in database
     try:
         user = db.query(User).filter(User.username == token_data.username).first()
         if user:

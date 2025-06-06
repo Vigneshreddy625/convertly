@@ -33,7 +33,6 @@ async def convert_pdf_to_word(
         if not file.filename.lower().endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are accepted")
 
-        # Save the original filename from the uploaded file
         original_filename = file.filename
         original_name_without_ext = os.path.splitext(original_filename)[0]
         
@@ -48,7 +47,6 @@ async def convert_pdf_to_word(
             try:
                 from app.models import File as DBFile
                 
-                # Generate a unique storage filename but preserve the original name
                 unique_id = str(uuid4())
                 storage_filename = f"{unique_id}_{output_filename}"
                 
@@ -62,9 +60,9 @@ async def convert_pdf_to_word(
                 
                 db_file = DBFile(
                     user_id=current_user.id,
-                    filename=original_filename,       # Store original PDF filename
-                    output_filename=output_filename,  # Store converted DOCX filename
-                    storage_path=storage_filename,    # Store storage filename
+                    filename=original_filename,       
+                    output_filename=output_filename,  
+                    storage_path=storage_filename,    
                     storage_url=file_url
                 )
                 
@@ -84,7 +82,7 @@ async def convert_pdf_to_word(
 
         return FileResponse(
             path=output_path,
-            filename=output_filename,  # Use the output filename derived from original filename
+            filename=output_filename,  
             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
     except Exception as e:
