@@ -12,13 +12,14 @@ router = APIRouter()
 
 @router.get("/me", response_model=InfoResponse)
 def get_user_info(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    user_info = db.query(Info).filter(Info.user_id == current_user.id).first()
+    user_info = current_user.userinfo  # Use the relationship instead of querying
     if not user_info:
         raise HTTPException(status_code=404, detail="User info not found")
 
     response = InfoResponse(
         id=user_info.id,
         user_id=user_info.user_id,
+        username=current_user.username,
         full_name=current_user.full_name,
         address=user_info.address,
         age=user_info.age,
@@ -49,6 +50,7 @@ def update_user_info(info: InfoUpdate, db: Session = Depends(get_db), current_us
     response = InfoResponse(
         id=user_info.id,
         user_id=user_info.user_id,
+        username=current_user.username,
         full_name=current_user.full_name,
         address=user_info.address,
         age=user_info.age,

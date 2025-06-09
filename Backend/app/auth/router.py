@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from typing import Optional
 
 from app.db.database import get_db
-from app.models import User
+from app.models import Info, User
 from .schemas import UserCreate, UserResponse, Token
 from .utils import get_password_hash, verify_password
 from .dependencies import (
@@ -23,33 +23,75 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    db_user_email = db.query(User).filter(User.email == user.email).first()
-    if db_user_email:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+    try:
+        # Check if email already exists
+        db_user_email = db.query(User).filter(User.email == user.email).first()
+        if db_user_email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        
+        # Check if username already exists
+        db_user_username = db.query(User).filter(User.username == user.username).first()
+        if db_user_username:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already taken"
+            )
+        
+        # Create user
+        hashed_password = get_password_hash(user.password)
+        db_user = User(
+            full_name=user.full_name,
+            email=user.email,
+            username=user.username,
+            hashed_password=hashed_password
         )
-    
-    db_user_username = db.query(User).filter(User.username == user.username).first()
-    if db_user_username:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already taken"
+        
+        # Add user to session but don't commit yet
+        db.add(db_user)
+        db.flush()  # This assigns an ID without committing
+        
+        # Debug: Print user ID to confirm user creation
+        print(f"User will have ID: {db_user.id}")
+        
+        # Create info record
+        new_info = Info(
+            user_id=db_user.id,
+            phone="",
+            address="",
+            avatar="",
+            age=None,
+            bio=""
         )
-    
-    hashed_password = get_password_hash(user.password)
-    db_user = User(
-        full_name=user.full_name,
-        email=user.email,
-        username=user.username,
-        hashed_password=hashed_password
-    )
-    
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    
-    return db_user
+        
+        db.add(new_info)
+        
+        # Commit both records together
+        db.commit()
+        db.refresh(db_user)
+        db.refresh(new_info)
+        
+        # Debug: Confirm info creation
+        print(f"Created info record with ID: {new_info.id}")
+        
+        # Verify the info was actually created
+        created_info = db.query(Info).filter(Info.user_id == db_user.id).first()
+        if not created_info:
+            print("WARNING: Info record was not found after creation!")
+        else:
+            print(f"Verified info record exists with ID: {created_info.id}")
+        
+        return db_user
+        
+    except Exception as e:
+        db.rollback()  # Rollback on error
+        print(f"Error during registration: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Registration failed: {str(e)}"
+        )
 
 @router.post("/login", response_model=Token)
 def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):

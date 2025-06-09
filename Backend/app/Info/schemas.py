@@ -5,6 +5,7 @@ from typing import Optional
 class InfoResponse(BaseModel):
     id: int
     user_id: int
+    username: str
     full_name: Optional[str] = None  
     address: Optional[str] = None
     age: Optional[int] = None
