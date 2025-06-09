@@ -1,16 +1,28 @@
-import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Items/Loading";
 
 const AuthContext = createContext(null);
 
-const API_URL = 'https://convertly-min2.onrender.com/auth';
-
+const API_URL = "https://convertly-min2.onrender.com/auth";
+const PROFILE_API_URL = "https://convertly-min2.onrender.com/info";
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, 
+  withCredentials: true,
+});
+
+const profileApi = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
 });
 
 export const useAuth = () => {
@@ -23,6 +35,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profileDetails, setProfileDetails] = useState(null);
   const [accessToken, setAccessToken] = useState(() => {
     return localStorage.getItem("accessToken") || null;
   });
@@ -47,57 +60,62 @@ export const AuthProvider = ({ children }) => {
     if (refreshTimerRef.current) {
       clearTimeout(refreshTimerRef.current);
     }
-    
+
     if (!token) return;
-    
+
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiresIn = payload.exp * 1000; 
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const expiresIn = payload.exp * 1000;
       const currentTime = Date.now();
       const tokenLifetime = expiresIn - currentTime;
-      
+
       if (tokenLifetime <= 0) {
-        console.log('Token has already expired');
+        console.log("Token has already expired");
         return;
       }
-      
+
       const refreshBuffer = Math.min(5 * 60 * 1000, tokenLifetime / 2);
       const timeUntilRefresh = Math.max(0, tokenLifetime - refreshBuffer);
-      
-      console.log(`Token will be refreshed in ${timeUntilRefresh / 1000} seconds`);
-      
+
+      console.log(
+        `Token will be refreshed in ${timeUntilRefresh / 1000} seconds`
+      );
+
       refreshTimerRef.current = setTimeout(() => {
-        console.log('Executing scheduled token refresh');
+        console.log("Executing scheduled token refresh");
         refreshToken();
       }, timeUntilRefresh);
     } catch (error) {
-      console.error('Error scheduling token refresh:', error);
+      console.error("Error scheduling token refresh:", error);
     }
   }, []);
 
   const refreshToken = useCallback(async () => {
-    console.log('Attempting to refresh token...');
+    console.log("Attempting to refresh token...");
     try {
-      const response = await api.post('/refresh');
-      
+      const response = await api.post("/refresh");
+
       if (response.data.access_token) {
-        console.log('Token refresh successful');
+        console.log("Token refresh successful");
         setAccessToken(response.data.access_token);
         scheduleTokenRefresh(response.data.access_token);
-        
+
         try {
-          const userResponse = await api.get('/me');
+          const userResponse = await api.get("/me");
           setUser(userResponse.data);
         } catch (userError) {
-          console.error('Failed to fetch user data after token refresh:', userError);
+          console.error(
+            "Failed to fetch user data after token refresh:",
+            userError
+          );
         }
-        
+
         return { success: true };
       } else {
-        throw new Error('Invalid refresh response');
+        throw new Error("Invalid refresh response");
       }
     } catch (error) {
-      console.error('Error refreshing token:', error);
+      console.error("Error refreshing token:", error);
       setUser(null);
       setAccessToken(null);
       return { success: false };
@@ -106,13 +124,13 @@ export const AuthProvider = ({ children }) => {
 
   const fetchCurrentUser = useCallback(async () => {
     if (!accessToken) return { success: false };
-    
+
     try {
-      const response = await api.get('/me');
+      const response = await api.get("/me");
       setUser(response.data);
       return { success: true, user: response.data };
     } catch (error) {
-      console.error('Error fetching current user:', error);
+      console.error("Error fetching current user:", error);
       if (error.response?.status === 401) {
         const refreshResult = await refreshToken();
         if (!refreshResult.success) {
@@ -128,21 +146,23 @@ export const AuthProvider = ({ children }) => {
     setRegisterLoading(true);
     setAuthError(null);
     try {
-      const response = await api.post('/register', userData);
+      const response = await api.post("/register", userData);
       setRegisterLoading(false);
       return { success: true };
     } catch (error) {
-      console.error('Registration failed:', error);
-      let errorMessage = 'Registration failed';
-      
+      console.error("Registration failed:", error);
+      let errorMessage = "Registration failed";
+
       if (error.response?.data?.detail) {
         if (Array.isArray(error.response.data.detail)) {
-          errorMessage = error.response.data.detail.map(err => err.msg).join(', ');
+          errorMessage = error.response.data.detail
+            .map((err) => err.msg)
+            .join(", ");
         } else {
           errorMessage = error.response.data.detail;
         }
       }
-      
+
       setAuthError(errorMessage);
       setRegisterLoading(false);
       return { error: errorMessage };
@@ -154,20 +174,20 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       const formData = new URLSearchParams();
-      formData.append('username', credentials.username);
-      formData.append('password', credentials.password);
-      
-      const response = await api.post('/login', formData, {
+      formData.append("username", credentials.username);
+      formData.append("password", credentials.password);
+
+      const response = await api.post("/login", formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       });
-      
+
       const token = response.data.access_token;
       setAccessToken(token);
       scheduleTokenRefresh(token);
-      navigate('/home');
-      
+      navigate("/home");
+
       // // Get user data with the new token
       // try {
       //   const userResponse = await api.get('/me');
@@ -177,12 +197,12 @@ export const AuthProvider = ({ children }) => {
       // } catch (userError) {
       //   throw new Error('Failed to fetch user data after login');
       // }
-      
+
       setLoginLoading(false);
       return { success: true };
     } catch (error) {
-      console.error('Login failed:', error);
-      const errorMessage = error.response?.data?.detail || 'Login failed';
+      console.error("Login failed:", error);
+      const errorMessage = error.response?.data?.detail || "Login failed";
       setAuthError(errorMessage);
       setLoginLoading(false);
       return { error: errorMessage };
@@ -192,9 +212,9 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setAuthError(null);
     try {
-      await api.post('/logout');
+      await api.post("/logout");
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     } finally {
       if (refreshTimerRef.current) {
         clearTimeout(refreshTimerRef.current);
@@ -202,9 +222,42 @@ export const AuthProvider = ({ children }) => {
       }
       setUser(null);
       setAccessToken(null);
-      navigate('/');
+      navigate("/");
     }
   };
+
+  const profileFetch = async () => {
+    try {
+      const response = await profileApi.get("/me");
+      setProfileDetails(response.data);
+      return { success: true, user: response.data };
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+
+      setProfileDetails(null);
+
+      return {
+        success: false,
+        error:
+          error?.response?.data?.detail || error.message || "Unknown error",
+      };
+    }
+  };
+
+  const profileUpdate = async (profileData) => {
+    try {
+      const response = await profileApi.patch("/me", profileData);
+      setProfileDetails(response.data);
+      return { success: true, user: response.data };
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return {
+        success: false,
+        error:
+          error?.response?.data?.detail || error.message || "Unknown error",
+      };
+    }
+  }
 
   useEffect(() => {
     const requestInterceptor = api.interceptors.request.use(
@@ -220,7 +273,7 @@ export const AuthProvider = ({ children }) => {
         if (
           error.response?.status === 401 &&
           !originalRequest._retry &&
-          !originalRequest.url?.includes('/refresh')
+          !originalRequest.url?.includes("/refresh")
         ) {
           originalRequest._retry = true;
 
@@ -248,9 +301,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('Initializing authentication...');
+      console.log("Initializing authentication...");
       setLoading(true);
-      
+
       if (accessToken) {
         try {
           const result = await fetchCurrentUser();
@@ -262,17 +315,17 @@ export const AuthProvider = ({ children }) => {
             }
           }
         } catch (error) {
-          console.error('Error initializing authentication:', error);
+          console.error("Error initializing authentication:", error);
           setUser(null);
           setAccessToken(null);
         }
       }
-      
+
       setLoading(false);
     };
-    
+
     initializeAuth();
-    
+
     return () => {
       if (refreshTimerRef.current) {
         clearTimeout(refreshTimerRef.current);
@@ -290,14 +343,17 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
+    profileFetch,
+    profileUpdate,
+    profileDetails,
     refreshToken,
     isAuthenticated: !!user,
-    api
+    api,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <Loading/> : children}
+      {loading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };
@@ -309,16 +365,16 @@ export const withAuth = (Component) => {
 
     useEffect(() => {
       if (!loading && !isAuthenticated) {
-        navigate('/login');
+        navigate("/login");
       }
     }, [loading, isAuthenticated, navigate]);
 
     if (loading) {
-      return <Loading/>;
+      return <Loading />;
     }
 
     if (!isAuthenticated) {
-      return null; 
+      return null;
     }
 
     return <Component {...props} />;
@@ -335,15 +391,15 @@ export const withAdminAuth = (Component) => {
     useEffect(() => {
       if (!loading) {
         if (!isAuthenticated) {
-          navigate('/login');
+          navigate("/login");
         } else if (user?.role !== "admin") {
-          navigate('/access-denied');
+          navigate("/access-denied");
         }
       }
     }, [loading, isAuthenticated, user, navigate]);
 
     if (loading) {
-      return <Loading/>;
+      return <Loading />;
     }
 
     if (!isAuthenticated || user?.role !== "admin") {

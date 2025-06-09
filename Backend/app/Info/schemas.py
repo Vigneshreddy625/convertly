@@ -5,7 +5,7 @@ from typing import Optional
 class InfoResponse(BaseModel):
     id: int
     user_id: int
-    full_name: Optional[str] = None
+    full_name: Optional[str] = None  
     address: Optional[str] = None
     age: Optional[int] = None
     phone: Optional[str] = None
@@ -17,18 +17,6 @@ class InfoResponse(BaseModel):
     class Config:
         orm_mode = True
 
-class InfoCreate(BaseModel):
-    user_id: int  
-    address: Optional[str] = None
-    age: Optional[int] = None
-    phone: Optional[str] = None
-    avatar: Optional[str] = None
-    bio: Optional[str] = None
-
-    class Config:
-        orm_mode = True
-        extra = "forbid"  
-
 class InfoUpdate(BaseModel):
     address: Optional[str] = None
     age: Optional[int] = None
@@ -38,4 +26,4 @@ class InfoUpdate(BaseModel):
 
     class Config:
         orm_mode = True
-        extra = "forbid"  
+        extra = "forbid"

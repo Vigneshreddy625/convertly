@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function RegisterForm() {
   const [formData, setFormData] = useState({
     email: "",
+    full_name: "",
     username: "",
     password: "",
   });
@@ -81,10 +82,10 @@ function RegisterForm() {
       <form onSubmit={handleSubmit} className="flex flex-col w-full text-gray-800">
         <div className="w-full flex flex-col space-y-0.5">
           <input
-            type="email"
-            name="email"
-            placeholder="email"
-            value={formData.email}
+            type="text"
+            name="full_name"
+            placeholder="Full Name"
+            value={formData.full_name}
             onChange={handleChange}
             required
             className="bg-[#f1f1f1] py-1 px-5 h-[50px] rounded-t-lg focus:outline-none"
@@ -95,6 +96,16 @@ function RegisterForm() {
             name="username"
             placeholder="username"
             value={formData.username}
+            onChange={handleChange}
+            required
+            className="bg-[#f1f1f1] py-1 px-5 h-[50px] focus:outline-none"
+          />
+          
+          <input
+            type="email"
+            name="email"
+            placeholder="email"
+            value={formData.email}
             onChange={handleChange}
             required
             className="bg-[#f1f1f1] py-1 px-5 h-[50px] focus:outline-none"
