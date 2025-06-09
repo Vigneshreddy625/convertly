@@ -21,7 +21,7 @@ const api = axios.create({
 });
 
 const profileApi = axios.create({
-  baseURL: API_URL,
+  baseURL: PROFILE_API_URL,
   withCredentials: true,
 });
 
