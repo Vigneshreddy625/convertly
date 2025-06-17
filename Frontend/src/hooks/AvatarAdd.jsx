@@ -3,8 +3,8 @@ import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = "https://eavjujizrdiumsfyhtlx.supabase.co"
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVhdmp1aml6cmRpdW1zZnlodGx4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzQwNTE1MCwiZXhwIjoyMDYyOTgxMTUwfQ.Oc_u9vuIvmBdZuz5lN1rjArUXMP3j7z-qdENms6x3ho";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

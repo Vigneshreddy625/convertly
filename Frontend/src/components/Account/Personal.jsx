@@ -23,15 +23,14 @@ import { useAuth } from "../../authContext/AuthContext";
 
 const profileimg = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAgBAQAAPwDZdkBZcF9cLGV/vunNQjmEFpI+6K+YN"; // placeholder image
 
-// Default profile data to fall back to if profileFetch returns nothing
 const defaultProfileData = {
-  name: "I'm Vignesh Reddy",
-  description: "Student and Developer", 
+  name: "Add yours",
+  description: "Add yours", 
   username: "vigneshreddy7",
-  age: "21",
-  address: "Ongole, Prakasam, Andhra Pradesh",
-  email: "vignesh@gmail.com",
-  phone: "+91 93XXXXXXXX",
+  age: "Add yours",
+  address: "Add yours",
+  email: "",
+  phone: "",
   role: "Premium",
   avatar: profileimg
 };
